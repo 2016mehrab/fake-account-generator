@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "name": "Fake Account Generator",
+  "browser_action": {
+    "default_icon": {},
+    "default_popup": "view.html"
+  },
+  "description": "Generate fake accounts",
+  "icons": {},
+  "permissions": ["storage"],
+  "version": "1.0"
+}
