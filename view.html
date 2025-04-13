@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="app.js" defer></script>
-    <title>Fake Account Generator</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -32,6 +30,10 @@
             color: #1a73e8;
             text-align: center;
             font-weight: 600;
+        }
+
+        a {
+            text-decoration: none;
         }
 
         #generate {
@@ -147,6 +149,18 @@
             background: #aaa;
         }
 
+        .flex {
+            display: flex;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+        .gap-small{
+
+            gap:0.3rem;
+        }
+
         @media (max-width: 360px) {
             .data-group {
                 grid-template-columns: 80px 1fr;
@@ -162,7 +176,12 @@
 <body>
     <div class="container">
         <h2>Fake Account Generator</h2>
-        <button id="generate"><span>Generate</span><span class="spinner"></span></button>
+        <div class="flex justify-center gap-small">
+
+            <a id="generate"><span>Generate</span><span class="spinner"></span></a>
+            <a id="generate" href="./inbox.html"> <span>Inbox</span><span class="spinner"></span></a>
+        </div>
+
         <main>
             <div class="data-group">
                 <label>First Name</label>
@@ -229,6 +248,8 @@
             </div>
         </main>
     </div>
+    <script src="email.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
