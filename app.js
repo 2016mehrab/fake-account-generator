@@ -20,6 +20,7 @@ const data_elements = {
 };
 
 function writeElements(data) {
+  console.log("from writeelements", data);
   let username = data.first_name.toLowerCase() + data.last_name.toLowerCase();
   data_elements.username.innerText = username;
   data_elements.password.innerText = data.password;
@@ -55,31 +56,59 @@ async function saveLocally(data) {
 async function retrieveLocal() {
   try {
     const res = await browser.storage.local.get("fake_account");
-    if (!res.fake_account) throw new Error("Failed to retrieve account");
+    console.log("res from retrieve", res);
+    if (!res.fake_account) return false;
     return JSON.parse(res.fake_account);
   } catch (error) {
     console.error(error);
   }
 }
-
 async function generateAccount() {
+  const generateButton = document.getElementById("generate");
+  generateButton.classList.add("loading");
   try {
     let res = await fetch("https://random-data-api.com/api/v2/users");
     res = await res.json();
-    // TODO: retrieve locally saved account
+    console.log("res from generate", res);
     writeElements(res);
+    saveLocally(res);
   } catch (error) {
     console.error(error);
+  } finally {
+    generateButton.classList.remove("loading");
   }
 }
+
 function formatPhoneNumber(phone) {
   // Replace dots with hyphens
   return phone.replace(/\./g, "-");
 }
 
-function main() {
+async function copy(e) {
+  const datagroup = e.currentTarget;
+  const strongEl = datagroup.querySelector("strong.data");
+  if (strongEl) {
+    try {
+      await navigator.clipboard.writeText(strongEl.textContent);
+      console.log("copied", strongEl.textContent);
+    } catch (error) {
+      console.error(error);
+    }
+  } else console.warn("No strong element found in data-group");
+}
+
+async function main() {
+  let data = await retrieveLocal();
+  if (data) {
+    writeElements(data);
+  }
+
   document
     .getElementById("generate")
     .addEventListener("click", generateAccount);
+  document
+    .querySelectorAll(".data-group")
+    .forEach((node) => node.addEventListener("click", copy));
 }
+
 main();

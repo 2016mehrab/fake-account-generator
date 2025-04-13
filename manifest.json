@@ -7,6 +7,6 @@
   },
   "description": "Generate fake accounts",
   "icons": {},
-  "permissions": ["storage"],
+  "permissions": ["storage", "clipboardWrite"],
   "version": "1.0"
 }
