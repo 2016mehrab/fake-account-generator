@@ -4,173 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
-            margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
-            min-width: 360px;
-            max-width: 500px;
-            color: #333;
-            line-height: 1.5;
-        }
+    <link rel="stylesheet" href="style.css">
 
-        .container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            margin: 0 0 16px;
-            color: #1a73e8;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        #generate {
-            width: 100%;
-            padding: 12px;
-            background: #1a73e8;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            margin-bottom: 16px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #generate:hover:not(.loading) {
-            background: #1557b0;
-        }
-
-        #generate:focus {
-            outline: 2px solid #1a73e8;
-            outline-offset: 2px;
-        }
-
-        #generate.loading {
-            background: #cccccc;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        #generate .spinner {
-            display: none;
-            border: 3px solid #ffffff;
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-
-        #generate.loading .spinner {
-            display: inline-block;
-        }
-
-        #generate.loading span {
-            display: none;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .data-group {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 0.7rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            transition: background 0.2s ease;
-            cursor: pointer;
-        }
-
-        .data-group:hover {
-            background: #f8f9fa;
-        }
-
-        label {
-            font-weight: 500;
-            color: #555;
-            font-size: 0.9rem;
-        }
-
-        .data {
-            font-weight: 600;
-            color: #222;
-            word-break: break-word;
-        }
-
-        .section-break {
-            border: 0;
-            border-top: 1px solid #eee;
-            margin: 16px 0;
-        }
-
-        .container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .container::-webkit-scrollbar-track {
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-
-        .container::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-
-        .container::-webkit-scrollbar-thumb:hover {
-            background: #aaa;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-        .gap-small{
-
-            gap:0.3rem;
-        }
-
-        @media (max-width: 360px) {
-            .data-group {
-                grid-template-columns: 80px 1fr;
-            }
-
-            label {
-                font-size: 0.85rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -178,8 +13,9 @@
         <h2>Fake Account Generator</h2>
         <div class="flex justify-center gap-small">
 
-            <a id="generate"><span>Generate</span><span class="spinner"></span></a>
-            <a id="generate" href="./inbox.html"> <span>Inbox</span><span class="spinner"></span></a>
+            <a id="generate" class="button"><span>Generate</span><span class="spinner"></span></a>
+            <a id="generate" class="button" href="./inbox.html"> <span>Inbox</span><span class="spinner"></span></a>
+
         </div>
 
         <main>

@@ -1,4 +1,3 @@
-const DEBOUNCE_INTERVAL = 500;
 const data_elements = {
   username: document.querySelector("strong#username"),
   email: document.querySelector("strong#email"),
@@ -37,38 +36,6 @@ function writeElements(data = {}) {
   data_elements.country.innerText = data.address?.country || "";
 }
 
-async function saveLocally(data) {
-  const serialized = JSON.stringify(data);
-  try {
-    const res = await browser.storage.local.set({ fake_account: serialized });
-    console.log("Saved data locally");
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function removeLocal(key = "fake_account") {
-  try {
-    await browser.storage.local.remove(key);
-    console.log("Removed locally saved data");
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function retrieveLocal() {
-  try {
-    const res = await browser.storage.local.get("fake_account");
-    console.log("Retrieved Data", res);
-    if (!res.fake_account) return false;
-    return JSON.parse(res.fake_account);
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-}
 
 async function generateAccount() {
   const generateButton = document.getElementById("generate");
@@ -127,13 +94,6 @@ async function copy(e) {
       console.error(error);
     }
   } else console.warn("No strong element found in data-group");
-}
-function debounce(fn, interval) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), interval);
-  }
 }
 
 async function main() {
