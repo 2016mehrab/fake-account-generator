@@ -30,8 +30,9 @@ async function makeAuthenticatedRequestCore(method, url, data = null, token) {
     const contentType = response.headers.get("Content-Type") || "";
     if (contentType.includes("application")) {
       return await response.json();
-    }
+    } else if (contentType.includes("message")) return await response.text();
     return null;
+
   } catch (error) {
     console.error(
       `Error (${method}-${url}):`,
@@ -127,6 +128,35 @@ async function deleteAccount(id, token) {
   }
 }
 
+async function getMessageAttachmentsCore(token, messageId) {
+  try {
+    const response = await makeAuthenticatedRequest(
+      "get",
+      `${URL.message}/${messageId}/download`,
+      null,
+      token
+    );
+    return response;
+  } catch (error) {
+    console.error("Failed to load messages", error.message);
+    return null;
+  }
+}
+async function getMessageCore(token, messageId) {
+  try {
+    const response = await makeAuthenticatedRequest(
+      "get",
+      `${URL.message}/${messageId}`,
+      null,
+      token
+    );
+    return response;
+  } catch (error) {
+    console.error("Failed to load messages", error.message);
+    return null;
+  }
+}
+
 async function getMessagesCore(token) {
   try {
     const response = await makeAuthenticatedRequest(
@@ -212,3 +242,5 @@ const makeAuthenticatedRequest = rateLimit(makeAuthenticatedRequestCore, DELAY);
 const makeRequest = rateLimit(makeRequestCore, DELAY);
 const getEmail = rateLimit(getEmailCore, DELAY);
 const getMessages = rateLimit(getMessagesCore, DELAY);
+const getMessage = rateLimit(getMessageCore, DELAY);
+const getMessageAttachments = rateLimit(getMessageAttachmentsCore, DELAY);
