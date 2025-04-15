@@ -3,7 +3,7 @@ document.getElementById("email-container").style.display = "block";
 function formatAddress(address) {
   const a = document.createElement("a");
   a.classList.add("email-address");
-  a.textContent = address.name || `<${address.address}>`;
+  a.textContent = ` <${address.address}>`;
   a.href = `mailto:${address.address}`;
   return a;
 }
@@ -65,23 +65,32 @@ function renderEmail(email) {
 }
 
 function renderSubject(subject) {
-    
   if (subject) {
-    document.getElementById("subject-content").style.display = "block";
-    document.getElementById("subject-content").textContent += subject;
+    document.getElementById("subject").style.display = "block";
+    document.getElementById("subject").textContent += subject;
   } else {
-    document.getElementById("subject-content").style.display = "none";
+    document.getElementById("subject").style.display = "none";
   }
 }
 
 function renderSender(sender) {
   if (sender) {
-    document.getElementById("from-container").style.display = "flex";
-    document.querySelector("#from-container .content").innerHTML = "";
-    document
-      .querySelector("#from-container .content")
-    //   .appendChild(formatAddress(sender));
-      .appendChild(sender);
+    const span = document.createElement('span')
+    span.textContent = sender.name || ""
+    document.querySelector("#from").appendChild(span);
+    document.querySelector("#from").appendChild(formatAddress(sender));
+  } else {
+    document.getElementById("from-container").style.display = "none";
+  }
+}
+
+function renderReceiver(address) {
+  if (address.length > 0) {
+
+    address.forEach((a) => {
+      document.querySelector("#to").appendChild(formatAddress(a));
+    });
+
   } else {
     document.getElementById("from-container").style.display = "none";
   }
@@ -94,18 +103,16 @@ function renderDate(date) {
 
     let dateOptions = {
       year: "numeric",
-      month: "numeric",
+      month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
-      second: "numeric",
-      hour12: false,
+      // second: "numeric",
+      // hour12: false,
     };
 
     document.querySelector("#date-container .content").textContent =
-      new Intl.DateTimeFormat("default", dateOptions).format(
-        new Date(date)
-      );
+      new Intl.DateTimeFormat("default", dateOptions).format(new Date(date));
   } else {
     document.getElementById("date-container").style.display = "none";
   }
@@ -126,6 +133,7 @@ function renderAttachments(email) {
     email.attachments.forEach((attachment) => {
       const base64data = arrayBufferToBase64(attachment.content);
       const downloadEl = document.createElement("a");
+      downloadEl.style.display="block"
       downloadEl.href = `data:${attachment.mimeType};base64,${base64data}`;
       downloadEl.textContent = `Download ${
         attachment.filename || "attachment"
@@ -147,7 +155,7 @@ function renderBody(email) {
   htmlContentElm.innerHTML = "";
   htmlContentElm.innerHTML += email?.text;
   console.log(email?.text);
-  
+
   //   if (email?.html.length > 0) {
   //     email.html.forEach((e) => {
   //       return (htmlContainerElm.innerHTML += e);
