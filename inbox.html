@@ -5,186 +5,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        #email-container {
-            outline: 1px solid #da6d3b;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .email-info-row {
-            display: flex;
-        }
-
-        .email-info-label {
-            font-weight: bold;
-        }
-
-        .email-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .email-body {
-            margin-top: 20px;
-        }
-
-        .attachment-list {
-            margin-top: 20px;
-        }
-
-
-        #date-container {
-            font-weight: 500;
-            font-size: 0.8rem;
-            color: var(--color-grey-500);
-
-        }
-
-        .attachment-item {
-            margin-bottom: 5px;
-        }
-
-        .attachment-link {
-            color: #1a73e8;
-            text-decoration: none;
-        }
-
-        .attachment-link:hover {
-            text-decoration: underline;
-        }
-
-        #date-container .content {
-
-            font-weight: bold;
-        }
-
-        .relationship {
-
-            grid-template-columns: 8ch 1fr;
-        }
-
-        #from span {
-            text-transform: capitalize;
-            color: var(--color-grey-500);
-            font-weight: 500;
-        }
-
-        .ellipsis {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 25ch;
-            overflow: hidden;
-        }
-
-        #attachments-container {
-            border-left: 4px solid #4285f4;
-            padding-left: 12px;
-            margin: 16px 0;
-            position: relative;
-            background-color: #f8f9fa;
-        }
-
-        .container-label {
-            font-weight: 600;
-            color: #4285f4;
-            display: flex;
-            align-items: center;
-        }
-
-        .container-label::before {
-            content: "📎";
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-    </style>
+    <link rel="stylesheet" href="inbox.css">
 </head>
 
 <body>
-    <h1>Inbox</h1>
-    <button id="refresh">Fetch The Latest Mail</button>
+    <main class="container">
 
-    <div class="mt-3" id="email-container" style="display: none">
-        <div class="flex justify-space-between outline">
-            <div class="outline grid relationship ">
-                <div class="outline">
-                    <div class="email-info-label">From</div>
-                    <div class="email-info-label">To</div>
-                    <div class="email-info-label">Subject </div>
+        <h2 class="text-center ">Inbox</h2>
+        <div class="flex gap-sm">
+            <a id="back" class="button" href="./view.html"> <span>back</span><span class="spinner"></span></a>
+            <a id="refresh" class="button"><span>Fetch The Latest Mail</span><span class="spinner"></span></a>
+
+        </div>
+
+        <div class="" id="email-container">
+            <div class="flex justify-space-between ">
+                <div class="grid relationship ">
+                    <div class="gap-between-rows">
+                        <div class="email-info-label">From</div>
+                        <div class="email-info-label">To</div>
+                        <div class="email-info-label">Subject </div>
+                    </div>
+                    <div class="gap-between-rows">
+                        <div id="from" class="content"> </div>
+                        <div id="to" class="content"> </div>
+                        <div id="subject" class="ellipsis"></div>
+                    </div>
+
+
                 </div>
-                <div>
-                    <div id="from" class="content"> </div>
-                    <div id="to" class="content"> </div>
-                    <div id="subject" class="ellipsis"></div>
+
+                <div id="date-container" class="email-info-row">
+                    <div class="content"></div>
                 </div>
+            </div>
+            <hr class="section-break">
 
-
+            <div id="html-container">
+                <pre id="html-content"></pre>
+                <div id="error-message"></div>
+                <!-- <div>
+                    <small><em>Images not shown? Mixed content is not allowed, so check that image links are not HTTP if
+                            this page is HTTPS.</em></small>
+                </div> -->
             </div>
 
-            <div id="date-container" class="email-info-row">
+
+            <div id="attachments-container">
+                <div class="container-label">Attachments</div>
                 <div class="content"></div>
             </div>
         </div>
-
-        <div id="html-container">
-            <pre id="html-content"></pre>
-            <div>
-                <small><em>Images not shown? Mixed content is not allowed, so check that image links are not HTTP if
-                        this page is HTTPS.</em></small>
-            </div>
-        </div>
-
-
-        <div id="attachments-container">
-            <div class="container-label">Attachments</div>
-            <div class="content"></div>
-        </div>
-    </div>
-    <pre id="output"></pre>
+    </main>
     <script src="email.js"></script>
-    <script src="render.js"></script>
-    <script type="module">
-        import postalMime from 'https://cdn.jsdelivr.net/npm/postal-mime@2.4.3/+esm';
-
-        document.getElementById("refresh").addEventListener('click', async () => {
-            const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NDQ1ODAxMjQsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJhZGRyZXNzIjoidW5mbGF0bGV5QHB0Y3QubmV0IiwiaWQiOiI2N2ZjMmUxOTdmODcxMjU4YmYwNjFjOWYiLCJtZXJjdXJlIjp7InN1YnNjcmliZSI6WyIvYWNjb3VudHMvNjdmYzJlMTk3Zjg3MTI1OGJmMDYxYzlmIl19fQ.AU8ucSeJZeslnXx-Lfd5NpBacQiMj7faMzcY4ql_OzqrjH4KFp856eC6Fqb9Y7U8tLDS7Hdfqh2fbSUuyi1kxQ";
-            const MESSAGE_ID = "67fd7d0f0babf4d18897b9f0";
-
-            try {
-                // Fetch and parse the email
-                // get message detail
-                const message = await getMessage(TOKEN, MESSAGE_ID);
-                renderBody(message)
-                renderSubject(message.subject)
-                renderDate(message.createdAt)
-                renderSender(message.from)
-                renderReceiver(message.to)
-
-                if (message.hasAttachments) {
-                    const res = await getMessageAttachments(TOKEN, MESSAGE_ID);
-                    const parsedEmail = await postalMime.parse(res);
-                    console.log(parsedEmail);
-                    renderAttachments(parsedEmail)
-                }
-                // download for attachment
-
-
-                // Display the parsed email
-                // displayEmail(parsedEmail);
-            } catch (error) {
-                console.error('Failed to parse email:', error);
-                document.getElementById('output').textContent = 'Error parsing email: ' + error.message;
-            }
-        });
-
-
+    <script  src="render.js"></script>
+    <script type="module" src="inbox.js">
     </script>
 </body>
 

@@ -31,6 +31,9 @@
   outline: 1px solid #d93025;
 
 }
+.mt-3{
+  margin-block-start: 2rem ;
+}
 body {
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
   color: var(--text-dark);
@@ -150,6 +153,9 @@ button.loading .spinner,
 button.loading span,
 .button.loading span {
   display: none;
+}
+.text-center{
+  text-align: center;
 }
 
 @keyframes spin {

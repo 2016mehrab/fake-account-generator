@@ -32,7 +32,41 @@ async function makeAuthenticatedRequestCore(method, url, data = null, token) {
       return await response.json();
     } else if (contentType.includes("message")) return await response.text();
     return null;
+  } catch (error) {
+    console.error(
+      `Error (${method}-${url}):`,
+      error.response?.data || error.message
+    );
+  }
+}
 
+async function makeAuthenticatedDownloadRequestCore(
+  method,
+  url,
+  data = null,
+  token
+) {
+  try {
+    const options = {
+      method: method.toUpperCase(),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    if (data !== null) options.body = JSON.stringify(data);
+
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      // If the response status is not OK, throw an error
+      const errorData = await response.json();
+      throw new Error(
+        `Error (${method}-${url}): ${errorData.message || response.statusText}`
+      );
+    }
+    let arrbuffer = await response.arrayBuffer();
+    console.log("download response", arrbuffer);
+    return arrbuffer;
   } catch (error) {
     console.error(
       `Error (${method}-${url}):`,
@@ -128,15 +162,22 @@ async function deleteAccount(id, token) {
   }
 }
 
-async function getMessageAttachmentsCore(token, messageId) {
+async function getMessageAttachmentCore(token, downloadUrl) {
   try {
-    const response = await makeAuthenticatedRequest(
+    const response = await makeAuthenticatedDownloadRequest(
       "get",
-      `${URL.message}/${messageId}/download`,
+      `${URL.base}${downloadUrl}`,
       null,
       token
     );
-    return response;
+    function arrayBufferToBase64(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let result = "";
+      for (let b of bytes) result += String.fromCharCode(b);
+      return btoa(result);
+    }
+    return arrayBufferToBase64(response);
+
   } catch (error) {
     console.error("Failed to load messages", error.message);
     return null;
@@ -239,8 +280,12 @@ async function retrieveLocal() {
 }
 
 const makeAuthenticatedRequest = rateLimit(makeAuthenticatedRequestCore, DELAY);
+const makeAuthenticatedDownloadRequest = rateLimit(
+  makeAuthenticatedDownloadRequestCore,
+  DELAY
+);
 const makeRequest = rateLimit(makeRequestCore, DELAY);
 const getEmail = rateLimit(getEmailCore, DELAY);
 const getMessages = rateLimit(getMessagesCore, DELAY);
 const getMessage = rateLimit(getMessageCore, DELAY);
-const getMessageAttachments = rateLimit(getMessageAttachmentsCore, DELAY);
+const getMessageAttachment = rateLimit(getMessageAttachmentCore, DELAY);

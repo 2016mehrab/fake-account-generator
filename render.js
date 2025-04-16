@@ -1,4 +1,5 @@
 document.getElementById("email-container").style.display = "block";
+document.getElementById("html-container").style.display = "block";
 
 function formatAddress(address) {
   const a = document.createElement("a");
@@ -75,8 +76,8 @@ function renderSubject(subject) {
 
 function renderSender(sender) {
   if (sender) {
-    const span = document.createElement('span')
-    span.textContent = sender.name || ""
+    const span = document.createElement("span");
+    span.textContent = sender.name || "";
     document.querySelector("#from").appendChild(span);
     document.querySelector("#from").appendChild(formatAddress(sender));
   } else {
@@ -86,11 +87,9 @@ function renderSender(sender) {
 
 function renderReceiver(address) {
   if (address.length > 0) {
-
     address.forEach((a) => {
       document.querySelector("#to").appendChild(formatAddress(a));
     });
-
   } else {
     document.getElementById("from-container").style.display = "none";
   }
@@ -125,22 +124,21 @@ function arrayBufferToBase64(buffer) {
   return btoa(result);
 }
 
-function renderAttachments(email) {
-  if (email.attachments && email.attachments.length) {
+function renderAttachments(attachmentUrls) {
+  if (attachmentUrls.length > 0) {
     document.getElementById("attachments-container").style.display = "block";
     document.querySelector("#attachments-container .content").innerHTML = "";
 
-    email.attachments.forEach((attachment) => {
-      const base64data = arrayBufferToBase64(attachment.content);
+    attachmentUrls.forEach((attachment) => {
       const downloadEl = document.createElement("a");
-      downloadEl.style.display="block"
-      downloadEl.href = `data:${attachment.mimeType};base64,${base64data}`;
+      downloadEl.style.display = "block";
+      downloadEl.href = attachment.data;
       downloadEl.textContent = `Download ${
-        attachment.filename || "attachment"
+        attachment.filename || attachment.id || "attachment"
       }`;
-      downloadEl.download = attachment.filename || "attachment";
-      downloadEl.classList.add("attachment-link");
 
+      downloadEl.download = attachment.filename || attachment.id || "attachment";
+      downloadEl.classList.add("attachment-link");
       document
         .querySelector("#attachments-container .content")
         .appendChild(downloadEl);
@@ -150,15 +148,45 @@ function renderAttachments(email) {
   }
 }
 
-function renderBody(email) {
-  const htmlContentElm = document.getElementById("html-content");
-  htmlContentElm.innerHTML = "";
-  htmlContentElm.innerHTML += email?.text;
-  console.log(email?.text);
 
-  //   if (email?.html.length > 0) {
-  //     email.html.forEach((e) => {
-  //       return (htmlContainerElm.innerHTML += e);
-  //     });
-  //   }
+function getAttachmentLinks(email) {
+  const id_link = [];
+  if (email.attachments && email.attachments.length > 0) {
+    email.attachments.forEach((attachment) => {
+      const base64data = arrayBufferToBase64(attachment.content);
+      const downloadEl = document.createElement("a");
+      downloadEl.style.display = "block";
+      downloadEl.href = `data:${attachment.mimeType};base64,${base64data}`;
+      downloadEl.textContent = `Download ${
+        attachment.filename || "attachment"
+      }`;
+      downloadEl.download = attachment.filename || "attachment";
+      downloadEl.classList.add("attachment-link");
+
+      id_link.push({
+        id: attachment.id,
+        data: downloadEl.href,
+        mimeType: attachment.mimeType,
+        name: attachment.filename || "attachment",
+      });
+    });
+    return id_link;
+  }
+  return [];
+}
+
+function renderBody(htmlString, attachmentUrls) {
+  const htmlContentElm = document.getElementById("html-content");
+  const hr = document.createElement("hr");
+  hr.classList.add("section-break");
+  htmlContentElm.innerHTML = "";
+  if (attachmentUrls.length > 0) {
+    attachmentUrls.forEach((attch) => {
+      const replacement = attch.data;
+      let matchingStr = new RegExp(`attachment:${attch.id}`, "g");
+      htmlString = htmlString.replace(matchingStr, replacement);
+    });
+  }
+  htmlContentElm.innerHTML += htmlString;
+  htmlContentElm.appendChild(hr);
 }

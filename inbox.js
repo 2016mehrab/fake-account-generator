@@ -1,55 +1,86 @@
-const errorDiv = document.getElementById("error");
-const messagesBody = document.getElementById("messages");
-const noEmailsDiv = document.getElementById("no-emails");
+// import postalMime  from "https://cdn.jsdelivr.net/npm/postal-mime@2.4.3/+esm";
+import postalMime, { decodeWords } from "./postal-mime.min.js";
 
-async function displayMessages() {
+async function refresh() {
+  const refreshEl = document.getElementById("refresh");
+  refreshEl.classList.add("loading");
+  const TOKEN =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NDQ4MDcwMjIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJhZGRyZXNzIjoiam9zaWFod2hpdGVAcHRjdC5uZXQiLCJpZCI6IjY3ZmZhNDZiOTViZTk3NmZlOTBmNjgwNCIsIm1lcmN1cmUiOnsic3Vic2NyaWJlIjpbIi9hY2NvdW50cy82N2ZmYTQ2Yjk1YmU5NzZmZTkwZjY4MDQiXX19.IQZ2ukiKgRx0ZHHJIz49qH_2h67W_-lc84Hx9DB23KKjpLdzkhPIgo174SfN3KYCv6Pb524Va1PrJb_h4XLhZw";
+  const M_ID = "67ffab2acf93b51195d5250c";
+
   try {
-    const { account, token } = await retrieveLocal();
-    if (!token) {
-      throw new Error("No email account data available");
+    // get token
+    // let token = null;
+    // let savedAcc = await retrieveLocal();
+    // if (
+    //   savedAcc &&
+    //   typeof savedAcc === "object" &&
+    //   Object.keys(savedAcc).length > 0
+    // )
+    //   token = savedAcc.token;
+
+    // if (!token) throw new Error("Generate an account first.");
+    // console.log("tokn", token);
+
+    //get message id
+    // const res = await getMessages(token);
+    // const messages_id = res["hydra:member"].map((m) => m.id) || [];
+
+    // if (messages_id.length < 1) {
+    //   throw new Error("No messages yet");
+    // }
+
+    // get message detail
+
+    // const message = await getMessage(token, messages_id[0]);
+    const message = await getMessage(TOKEN, M_ID);
+
+    let html;
+    console.log("message", message);
+    console.log(JSON.stringify(message));
+
+    if (message?.html.length > 0) {
+      html = decodeWords(message.html[0]);
+      console.log("decoded html", decodeWords(message.html[0]));
     }
 
-    const response = await getMessages(token);
-    const messages = response?.["hydra:member"] || [];
+    let attachmentUrls = [];
 
-    if (messages.length === 0) {
-      noEmailsDiv.style.display = "block";
-      return;
+    if (message.hasAttachments) {
+      // const res = await getMessageAttachments(token, messages_id[0]);
+      attachmentUrls = await Promise.all(
+        message.attachments.map(
+          async ({ downloadUrl, id, filename, size, contentType }) => {
+            let base64Data = await getMessageAttachment(TOKEN, downloadUrl);
+            return {
+              data: `data:${contentType};base64,${base64Data}`,
+              id,
+              filename,
+              size,
+              contentType,
+            };
+          }
+        )
+      );
     }
-    noEmailsDiv.style.display = "none";
 
-    messagesBody.innerHTML = messages
-      .map((msg) => {
-        const from = msg.from?.address || "Unknown";
-        const subject = msg.subject || "(No Subject)";
-        const date = new Date(msg.createdAt).toLocaleString("en-US", {
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        });
-        const unreadClass = msg.seen ? "" : "unread";
-        const attachmentClass = msg.hasAttachments ? "attachment" : "";
+    renderBody(html,  attachmentUrls);
+    renderSubject(message.subject);
+    renderDate(message.createdAt);
+    renderSender(message.from);
+    renderReceiver(message.to);
+    renderAttachments(attachmentUrls);
 
-        return `
-          <div class="${unreadClass} grid grid-cols-3" data-id="${msg.id}">
-              <span class="date">${date}</span>
-              <span class="sender">${from}</span>
-              <span class="subject ${attachmentClass}">${subject}</span>
-          </div>
-        `;
-      })
-      .join("");
   } catch (error) {
-    console.error("Failed to load messages:", error);
-    errorDiv.textContent = "Failed to load messages: " + error.message;
-    errorDiv.style.display = "block";
-    noEmailsDiv.style.display = "none";
+    console.error("something went wrong", error);
+    const errorBlock = document.createElement("p");
+    errorBlock.textContent = error.message || "something went wrong";
+    const error_messageEl = document.getElementById("error-message");
+    error_messageEl.appendChild(errorBlock);
+  } finally {
+    refreshEl.classList.remove("loading");
   }
 }
-
 document
   .getElementById("refresh")
-  .addEventListener("click", debounce(displayMessages, DEBOUNCE_INTERVAL));
-displayMessages();
+  .addEventListener("click", debounce(refresh, DEBOUNCE_INTERVAL));
