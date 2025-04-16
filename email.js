@@ -58,15 +58,13 @@ async function makeAuthenticatedDownloadRequestCore(
 
     const response = await fetch(url, options);
     if (!response.ok) {
-      // If the response status is not OK, throw an error
       const errorData = await response.json();
       throw new Error(
         `Error (${method}-${url}): ${errorData.message || response.statusText}`
       );
     }
-    let arrbuffer = await response.arrayBuffer();
-    console.log("download response", arrbuffer);
-    return arrbuffer;
+    return  await response.arrayBuffer();
+
   } catch (error) {
     console.error(
       `Error (${method}-${url}):`,

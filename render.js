@@ -103,7 +103,6 @@ function renderReceiver(address) {
 
     receiverDropDown.addEventListener("change", (e) => {
       const selectedMail = e.target.value;
-      console.log("selected receiver mail", selectedMail);
       if (selectedMail) window.location.href = selectedMail;
     });
   } else {
