@@ -70,6 +70,7 @@ async function refresh() {
     renderSender(message.from);
     renderReceiver(message.to);
     renderAttachments(attachmentUrls);
+    
   } catch (error) {
     console.error("something went wrong", error);
     const errorBlock = document.createElement("p");

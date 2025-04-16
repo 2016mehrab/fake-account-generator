@@ -1,12 +1,20 @@
 document.getElementById("email-container").style.display = "block";
 document.getElementById("html-container").style.display = "block";
+const receiverDropDown = document.createElement("select");
 
 function formatAddress(address) {
   const a = document.createElement("a");
   a.classList.add("email-address");
-  a.textContent = ` <${address.address}>`;
+  a.textContent = `<${address.address}>`;
   a.href = `mailto:${address.address}`;
   return a;
+}
+
+function getAddressOption(address) {
+  const option = document.createElement("option");
+  option.value = `mailto:${address.address}`;
+  option.text = `<${address.address}>`;
+  return option;
 }
 
 function formatAddresses(addresses) {
@@ -87,8 +95,16 @@ function renderSender(sender) {
 
 function renderReceiver(address) {
   if (address.length > 0) {
+    document.querySelector("#to").appendChild(receiverDropDown);
     address.forEach((a) => {
-      document.querySelector("#to").appendChild(formatAddress(a));
+      // document.querySelector("#to").appendChild(formatAddress(a));
+      receiverDropDown.appendChild(getAddressOption(a));
+    });
+
+    receiverDropDown.addEventListener("change", (e) => {
+      const selectedMail = e.target.value;
+      console.log("selected receiver mail", selectedMail);
+      if (selectedMail) window.location.href = selectedMail;
     });
   } else {
     document.getElementById("from-container").style.display = "none";
@@ -137,7 +153,8 @@ function renderAttachments(attachmentUrls) {
         attachment.filename || attachment.id || "attachment"
       }`;
 
-      downloadEl.download = attachment.filename || attachment.id || "attachment";
+      downloadEl.download =
+        attachment.filename || attachment.id || "attachment";
       downloadEl.classList.add("attachment-link");
       document
         .querySelector("#attachments-container .content")
@@ -147,7 +164,6 @@ function renderAttachments(attachmentUrls) {
     document.getElementById("attachments-container").style.display = "none";
   }
 }
-
 
 function getAttachmentLinks(email) {
   const id_link = [];

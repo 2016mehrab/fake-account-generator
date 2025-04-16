@@ -63,8 +63,6 @@
 
         #from span {
             text-transform: capitalize;
-            color: var(--color-grey-500);
-            font-weight: 500;
         }
 
         .ellipsis {
@@ -107,4 +105,11 @@
 
         .gap-sm {
             gap: 0.8rem;
+        }
+        select{
+            padding:0.3em 0.7em;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: var(--background-hover);
+            box-shadow: var(--shadow);
         }
