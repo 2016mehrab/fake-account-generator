@@ -5,8 +5,8 @@
     "default_icon": {},
     "default_popup": "view.html"
   },
-  "description": "Generate fake accounts",
+  "description": "Generate fake account with usable email address",
   "icons": {},
   "permissions": ["storage", "clipboardWrite"],
-  "version": "1.0"
+  "version": "1.0.1"
 }
