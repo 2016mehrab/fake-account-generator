@@ -1,7 +1,9 @@
 // import postalMime  from "https://cdn.jsdelivr.net/npm/postal-mime@2.4.3/+esm";
-import  { decodeWords } from "./postal-mime.min.js";
+import { decodeWords } from "./postal-mime.min.js";
 
 async function refresh() {
+  const error_messageEl = document.getElementById("error-message");
+  error_messageEl.innerHTML = "";
   const refreshEl = document.getElementById("refresh");
   refreshEl.classList.add("loading");
 
@@ -17,6 +19,8 @@ async function refresh() {
       token = savedAcc.token;
 
     if (!token) throw new Error("Generate an account first.");
+
+    console.info(token);
 
     //get message id
     const res = await getMessages(token);
@@ -64,9 +68,7 @@ async function refresh() {
   } catch (error) {
     console.error("something went wrong", error);
     const errorBlock = document.createElement("p");
-    errorBlock.textContent = "";
     errorBlock.textContent = error.message || "something went wrong";
-    const error_messageEl = document.getElementById("error-message");
     error_messageEl.appendChild(errorBlock);
   } finally {
     refreshEl.classList.remove("loading");

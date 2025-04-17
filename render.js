@@ -75,8 +75,10 @@ function renderEmail(email) {
 
 function renderSubject(subject) {
   if (subject) {
-    document.getElementById("subject").style.display = "block";
-    document.getElementById("subject").textContent += subject;
+    const containerEl = document.getElementById("subject");
+    containerEl.style.display = "block";
+    containerEl.innerHTML = "";
+    containerEl.textContent = subject;
   } else {
     document.getElementById("subject").style.display = "none";
   }
@@ -86,6 +88,7 @@ function renderSender(sender) {
   if (sender) {
     const span = document.createElement("span");
     span.textContent = sender.name || "";
+    document.querySelector("#from").innerHTML = "";
     document.querySelector("#from").appendChild(span);
     document.querySelector("#from").appendChild(formatAddress(sender));
   } else {
@@ -112,7 +115,7 @@ function renderReceiver(address) {
 
 function renderDate(date) {
   if (date) {
-    document.getElementById("date-container").style.display = "flex";
+    // document.getElementById("date-container").style.display = "flex";
     document.querySelector("#date-container .content").innerHTML = "";
 
     let dateOptions = {
@@ -192,9 +195,14 @@ function getAttachmentLinks(email) {
 
 function renderBody(htmlString, attachmentUrls) {
   const htmlContentElm = document.getElementById("html-content");
-  const hr = document.createElement("hr");
-  hr.classList.add("section-break");
+  const iframe = document.createElement("iframe");
+  iframe.style.width = "100%";
+  iframe.style.height = "400px";
+  iframe.style.border = "1px solid var(--primary-color)";
   htmlContentElm.innerHTML = "";
+
+  htmlContentElm.appendChild(iframe);
+
   if (attachmentUrls.length > 0) {
     attachmentUrls.forEach((attch) => {
       const replacement = attch.data;
@@ -202,6 +210,14 @@ function renderBody(htmlString, attachmentUrls) {
       htmlString = htmlString.replace(matchingStr, replacement);
     });
   }
-  htmlContentElm.innerHTML += htmlString;
+
+  iframe.onload = () => {
+    let doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.body.innerHTML = htmlString;
+  };
+
+  iframe.srcdoc = "<!DOCTYPE html><html><head></head><body></body></html>";
+  const hr = document.createElement("hr");
+  hr.classList.add("section-break");
   htmlContentElm.appendChild(hr);
 }

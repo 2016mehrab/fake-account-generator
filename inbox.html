@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.min.css">
+    <!-- <link rel="stylesheet" href="inbox.min.css"> -->
     <link rel="stylesheet" href="inbox.css">
 </head>
 
@@ -19,35 +20,32 @@
         </div>
 
         <div class="" id="email-container">
-            <div class="flex justify-space-between ">
-                <div class="grid relationship ">
-                    <div class="gap-between-rows">
-                        <div class="email-info-label">From</div>
-                        <div class="email-info-label">To</div>
-                        <div class="email-info-label">Subject </div>
-                    </div>
-                    <div class="gap-between-rows">
-                        <div id="from" class="content"> </div>
-                        <div id="to" class="content"> </div>
-                        <div id="subject" class="ellipsis"></div>
-                    </div>
-
-
-                </div>
+            <div class="email-header">
 
                 <div id="date-container" class="email-info-row">
                     <div class="content"></div>
                 </div>
+                <div class="flex  align-center box">
+                    <div class="email-info-label ">From</div>
+                    <div id="from" class="content "></div>
+                </div>
+                <div class="flex  align-center box-mid">
+                    <div class="email-info-label">To</div>
+                    <div id="to" class="content"></div>
+                </div>
+                <div class="flex  align-center box">
+                    <div class="email-info-label ">Subject</div>
+                    <div id="subject" class="ellipsis content"></div>
+                </div>
+
+
             </div>
             <hr class="section-break">
 
             <div id="html-container">
                 <pre id="html-content"></pre>
                 <div id="error-message"></div>
-                <!-- <div>
-                    <small><em>Images not shown? Mixed content is not allowed, so check that image links are not HTTP if
-                            this page is HTTPS.</em></small>
-                </div> -->
+
             </div>
 
 
@@ -57,8 +55,8 @@
             </div>
         </div>
     </main>
-    <script src="email.js"></script>
-    <script  src="render.js"></script>
+    <script src="email.min.js"></script>
+    <script src="render.js"></script>
     <script type="module" src="inbox.js">
     </script>
 </body>
