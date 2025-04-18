@@ -1,5 +1,6 @@
-// import postalMime  from "https://cdn.jsdelivr.net/npm/postal-mime@2.4.3/+esm";
-import { decodeWords } from "./postal-mime.min.js";
+import  {decodeWords}  from "https://cdn.jsdelivr.net/npm/postal-mime@2.4.3/+esm";
+import dompurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.2.5/+esm'
+// import { decodeWords } from "./postal-mime.min.js";
 
 async function refresh() {
   const error_messageEl = document.getElementById("error-message");
@@ -38,6 +39,7 @@ async function refresh() {
 
     if (message?.html.length > 0) {
       html = decodeWords(message.html[0]);
+      html= dompurify.sanitize(htmlString);
     }
 
     let attachmentUrls = [];

@@ -1,3 +1,4 @@
+
 document.getElementById("email-container").style.display = "block";
 document.getElementById("html-container").style.display = "block";
 const receiverDropDown = document.createElement("select");
@@ -17,61 +18,7 @@ function getAddressOption(address) {
   return option;
 }
 
-function formatAddresses(addresses) {
-  let parts = [];
 
-  let processAddress = (address, partCounter) => {
-    if (partCounter) {
-      let sep = document.createElement("span");
-      sep.classList.add("email-address-separator");
-      sep.textContent = ", ";
-      parts.push(sep);
-    }
-
-    if (address.group) {
-      let groupStart = document.createElement("span");
-      groupStart.classList.add("email-address-group");
-      let groupEnd = document.createElement("span");
-      groupEnd.classList.add("email-address-group");
-
-      groupStart.textContent = `${address.name}:`;
-      groupEnd.textContent = `;`;
-
-      parts.push(groupStart);
-      address.group.forEach(processAddress);
-      parts.push(groupEnd);
-    } else {
-      parts.push(formatAddress(address));
-    }
-  };
-
-  addresses.forEach(processAddress);
-
-  const result = document.createDocumentFragment();
-  parts.forEach((part) => {
-    result.appendChild(part);
-  });
-  return result;
-}
-
-function renderEmail(email) {
-  renderSubject(email);
-  renderSender(email);
-  renderDate(email);
-  renderBody(email);
-
-  for (let type of ["to", "cc", "bcc"]) {
-    if (email[type] && email[type].length) {
-      document.getElementById(`${type}-container`).style.display = "flex";
-      document.querySelector(`#${type}-container .content`).innerHTML = "";
-      document
-        .querySelector(`#${type}-container .content`)
-        .appendChild(formatAddresses(email[type]));
-    } else {
-      document.getElementById(`${type}-container`).style.display = "none";
-    }
-  }
-}
 
 function renderSubject(subject) {
   if (subject) {
@@ -193,7 +140,8 @@ function getAttachmentLinks(email) {
   return [];
 }
 
-function renderBody(htmlString, attachmentUrls) {
+function renderBody(cleanHtml, attachmentUrls) {
+
   const htmlContentElm = document.getElementById("html-content");
   const iframe = document.createElement("iframe");
   iframe.style.width = "100%";
@@ -207,13 +155,13 @@ function renderBody(htmlString, attachmentUrls) {
     attachmentUrls.forEach((attch) => {
       const replacement = attch.data;
       let matchingStr = new RegExp(`attachment:${attch.id}`, "g");
-      htmlString = htmlString.replace(matchingStr, replacement);
+      cleanHtml = cleanHtml.replace(matchingStr, replacement);
     });
   }
 
   iframe.onload = () => {
     let doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.body.innerHTML = htmlString;
+    doc.body.innerHTML = cleanHtml;
   };
 
   iframe.srcdoc = "<!DOCTYPE html><html><head></head><body></body></html>";

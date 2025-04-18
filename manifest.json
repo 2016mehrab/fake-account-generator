@@ -2,11 +2,21 @@
   "manifest_version": 2,
   "name": "Fake Account Generator",
   "browser_action": {
-    "default_icon": {},
+    "default_icon": {
+      "32": "icon-32.png",
+      "48": "icon-48.png",
+      "64": "icon-64.png",
+      "128": "icon-128.png"
+    },
     "default_popup": "view.html"
   },
   "description": "Generate fake account with usable email address",
-  "icons": {},
+  "icons": {
+    "32": "icon-32.png",
+    "48": "icon-48.png",
+    "64": "icon-64.png",
+    "128": "icon-128.png"
+  },
   "permissions": ["storage", "clipboardWrite"],
   "version": "1.0.1"
 }
