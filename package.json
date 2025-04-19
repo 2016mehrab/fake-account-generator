@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "dompurify": "^3.2.5",
     "postal-mime": "^2.4.3"
   },
   "devDependencies": {
-    "vite": "^6.3.2"
+    "vite": "^6.3.2",
+    "web-ext": "^8.5.0"
   }
 }

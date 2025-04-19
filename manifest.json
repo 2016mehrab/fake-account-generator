@@ -10,13 +10,20 @@
     },
     "default_popup": "view.html"
   },
-  "description": "Generate fake account with usable email address",
+
+  "description": "Generate temporary account with usable email address",
   "icons": {
     "32": "icon-32.png",
     "48": "icon-48.png",
     "64": "icon-64.png",
     "128": "icon-128.png"
   },
+
   "permissions": ["storage", "clipboardWrite"],
-  "version": "1.0.1"
+  "version": "1.0.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "2016mehrab@gmail.com"
+    }
+  }
 }
