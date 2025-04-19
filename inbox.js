@@ -1,5 +1,5 @@
 import { decodeWords } from "postal-mime";
-import DOMPurify from "dompurify";
+// import DOMPurify from "dompurify";
 import { debounce, retrieveLocal } from "./utils.js";
 import { DEBOUNCE_INTERVAL } from "./consts.js";
 import {
@@ -53,7 +53,7 @@ async function refresh() {
 
     if (message?.html.length > 0) {
       html = decodeWords(message.html[0]);
-      html = DOMPurify.sanitize(html);
+      // html = DOMPurify.sanitize(html);
     }
 
     let attachmentUrls = [];
