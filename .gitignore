@@ -1,1 +1,45 @@
 drawing.svg
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Node modules ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Logs ===
+*.log
+
+# === Compiled output ===
+dist/
+build/
+*.xpi
+
+# === Minified files (optional if you minify manually and include the output) ===
+*.min.js
+*.min.css
+*.map
+
+# === Source maps ===
+*.map
+
+# === System files ===
+*.swp
+*~
+.vscode/
+.idea/
+
+# === Testing ===
+coverage/
+*.http
+
+# === Dependencies you don't want in version control ===
+libs/
+
+# === Others ===
+.env
+.env.local
+.env.*
+.cache/

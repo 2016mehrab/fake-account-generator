@@ -1,9 +1,10 @@
+import {arrayBufferToBase64} from "./utils.js"
 
 document.getElementById("email-container").style.display = "block";
 document.getElementById("html-container").style.display = "block";
 const receiverDropDown = document.createElement("select");
 
-function formatAddress(address) {
+export function formatAddress(address) {
   const a = document.createElement("a");
   a.classList.add("email-address");
   a.textContent = `<${address.address}>`;
@@ -11,7 +12,7 @@ function formatAddress(address) {
   return a;
 }
 
-function getAddressOption(address) {
+export function getAddressOption(address) {
   const option = document.createElement("option");
   option.value = `mailto:${address.address}`;
   option.text = `<${address.address}>`;
@@ -20,7 +21,7 @@ function getAddressOption(address) {
 
 
 
-function renderSubject(subject) {
+export function renderSubject(subject) {
   if (subject) {
     const containerEl = document.getElementById("subject");
     containerEl.style.display = "block";
@@ -31,7 +32,8 @@ function renderSubject(subject) {
   }
 }
 
-function renderSender(sender) {
+
+export function renderSender(sender) {
   if (sender) {
     const span = document.createElement("span");
     span.textContent = sender.name || "";
@@ -43,7 +45,7 @@ function renderSender(sender) {
   }
 }
 
-function renderReceiver(address) {
+export function renderReceiver(address) {
   if (address.length > 0) {
     document.querySelector("#to").appendChild(receiverDropDown);
     address.forEach((a) => {
@@ -60,9 +62,8 @@ function renderReceiver(address) {
   }
 }
 
-function renderDate(date) {
+export function renderDate(date) {
   if (date) {
-    // document.getElementById("date-container").style.display = "flex";
     document.querySelector("#date-container .content").innerHTML = "";
 
     let dateOptions = {
@@ -82,14 +83,8 @@ function renderDate(date) {
   }
 }
 
-function arrayBufferToBase64(buffer) {
-  const bytes = new Uint8Array(buffer);
-  let result = "";
-  for (let b of bytes) result += String.fromCharCode(b);
-  return btoa(result);
-}
 
-function renderAttachments(attachmentUrls) {
+export function renderAttachments(attachmentUrls) {
   if (attachmentUrls.length > 0) {
     document.getElementById("attachments-container").style.display = "block";
     document.querySelector("#attachments-container .content").innerHTML = "";
@@ -114,7 +109,7 @@ function renderAttachments(attachmentUrls) {
   }
 }
 
-function getAttachmentLinks(email) {
+export function getAttachmentLinks(email) {
   const id_link = [];
   if (email.attachments && email.attachments.length > 0) {
     email.attachments.forEach((attachment) => {
@@ -140,7 +135,7 @@ function getAttachmentLinks(email) {
   return [];
 }
 
-function renderBody(cleanHtml, attachmentUrls) {
+export function renderBody(cleanHtml, attachmentUrls) {
 
   const htmlContentElm = document.getElementById("html-content");
   const iframe = document.createElement("iframe");

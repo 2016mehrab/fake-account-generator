@@ -1,110 +1,13 @@
-const DELAY = 3000;
-const DEBOUNCE_INTERVAL = 500;
-const URL = {
-  base: "https://api.mail.tm",
-  token: "https://api.mail.tm/token",
-  account: "https://api.mail.tm/accounts",
-  domain: "https://api.mail.tm/domains",
-  message: "https://api.mail.tm/messages",
-};
+import {
+  makeRequest,
+  rateLimit,
+  makeAuthenticatedDownloadRequest,
+  makeAuthenticatedRequest,
+  arrayBufferToBase64,
+} from "./utils.js";
+import { DELAY, URL } from "./consts.js";
 
-async function makeAuthenticatedRequestCore(method, url, data = null, token) {
-  try {
-    const options = {
-      method: method.toUpperCase(),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    if (data !== null) options.body = JSON.stringify(data);
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      // If the response status is not OK, throw an error
-      const errorData = await response.json();
-      throw new Error(
-        `Error (${method}-${url}): ${errorData.message || response.statusText}`
-      );
-    }
-    const contentType = response.headers.get("Content-Type") || "";
-    if (contentType.includes("application")) {
-      return await response.json();
-    } else if (contentType.includes("message")) return await response.text();
-    return null;
-  } catch (error) {
-    console.error(
-      `Error (${method}-${url}):`,
-      error.response?.data || error.message
-    );
-  }
-}
-
-async function makeAuthenticatedDownloadRequestCore(
-  method,
-  url,
-  data = null,
-  token
-) {
-  try {
-    const options = {
-      method: method.toUpperCase(),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    if (data !== null) options.body = JSON.stringify(data);
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `Error (${method}-${url}): ${errorData.message || response.statusText}`
-      );
-    }
-    return  await response.arrayBuffer();
-
-  } catch (error) {
-    console.error(
-      `Error (${method}-${url}):`,
-      error.response?.data || error.message
-    );
-  }
-}
-
-async function makeRequestCore(method, url, data = null) {
-  try {
-    const options = {
-      method: method.toUpperCase(),
-    };
-    if (data !== null) {
-      options.headers = {
-        "Content-Type": "application/json",
-      };
-      options.body = JSON.stringify(data);
-    }
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `Error (${method}-${url}): ${errorData.message || response.statusText}`
-      );
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(
-      `Error (${method}-${url}):`,
-      error.response?.data || error.message
-    );
-    throw new Error(
-      `Error (${method}-${url}): ${error.response?.data || error.message}`
-    );
-  }
-}
-
-async function getAuthToken(data = {}) {
+export async function getAuthToken(data = {}) {
   try {
     const response = await makeRequest("post", URL.token, data);
     return response.token;
@@ -114,7 +17,7 @@ async function getAuthToken(data = {}) {
   }
 }
 
-async function getDomain() {
+export async function getDomain() {
   try {
     const response = await makeRequest("get", URL.domain);
     const domains = response["hydra:member"]?.map((d) => d.domain);
@@ -128,13 +31,14 @@ async function getDomain() {
     return null;
   }
 }
+
 // data
 //{
 //  "address": "sherrellturner@ptct.net",
 //   "password":"NpqGWUk6gJ"
 
 //}
-async function registerAccount(data) {
+export async function registerAccount(data) {
   try {
     const response = await makeRequest("post", URL.account, data);
     return response;
@@ -144,9 +48,9 @@ async function registerAccount(data) {
   }
 }
 
-async function deleteAccount(id, token) {
+export async function deleteAccount(id, token) {
   try {
-    const response = await makeAuthenticatedRequest(
+    await makeAuthenticatedRequest(
       "delete",
       `${URL.account}/${id}`,
       null,
@@ -168,14 +72,7 @@ async function getMessageAttachmentCore(token, downloadUrl) {
       null,
       token
     );
-    function arrayBufferToBase64(buffer) {
-      const bytes = new Uint8Array(buffer);
-      let result = "";
-      for (let b of bytes) result += String.fromCharCode(b);
-      return btoa(result);
-    }
     return arrayBufferToBase64(response);
-
   } catch (error) {
     console.error("Failed to load messages", error.message);
     return null;
@@ -225,65 +122,7 @@ async function getEmailCore({ username, password }) {
   return { account, token, rawMessages };
 }
 
-function rateLimit(fn, limitMs) {
-  let lastCall = 0;
-  return async (...args) => {
-    const now = Date.now();
-    const diff = now - lastCall;
-    if (diff < limitMs)
-      await new Promise((cb) => setTimeout(cb, limitMs - diff));
-    lastCall = Date.now();
-    return fn(...args);
-  };
-}
-
-function debounce(fn, interval) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), interval);
-  };
-}
-
-async function saveLocally(data) {
-  const serialized = JSON.stringify(data);
-  try {
-    const res = await browser.storage.local.set({ fake_account: serialized });
-    console.log("Saved data locally");
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function removeLocal(key = "fake_account") {
-  try {
-    await browser.storage.local.remove(key);
-    console.log("Removed locally saved data");
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function retrieveLocal() {
-  try {
-    const res = await browser.storage.local.get("fake_account");
-    if (!res.fake_account) return false;
-    return JSON.parse(res.fake_account);
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-}
-
-const makeAuthenticatedRequest = rateLimit(makeAuthenticatedRequestCore, DELAY);
-const makeAuthenticatedDownloadRequest = rateLimit(
-  makeAuthenticatedDownloadRequestCore,
-  DELAY
-);
-const makeRequest = rateLimit(makeRequestCore, DELAY);
-const getEmail = rateLimit(getEmailCore, DELAY);
-const getMessages = rateLimit(getMessagesCore, DELAY);
-const getMessage = rateLimit(getMessageCore, DELAY);
-const getMessageAttachment = rateLimit(getMessageAttachmentCore, DELAY);
+export const getEmail = rateLimit(getEmailCore, DELAY);
+export const getMessages = rateLimit(getMessagesCore, DELAY);
+export const getMessage = rateLimit(getMessageCore, DELAY);
+export const getMessageAttachment = rateLimit(getMessageAttachmentCore, DELAY);

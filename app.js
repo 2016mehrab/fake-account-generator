@@ -1,3 +1,7 @@
+import { DEBOUNCE_INTERVAL } from "./consts.js";
+import { deleteAccount, getEmail } from "./email.js";
+import {debounce, formatPhoneNumber, removeLocal, retrieveLocal, saveLocally} from "./utils.js"
+
 const data_elements = {
   username: document.querySelector("strong#username"),
   email: document.querySelector("strong#email"),
@@ -18,6 +22,7 @@ const data_elements = {
   state: document.querySelector("strong#state"),
   country: document.querySelector("strong#country"),
 };
+
 function writeElements(data = {}) {
   data_elements.username.innerText = data.username || "";
   data_elements.email.innerText = data.email || "";
@@ -78,10 +83,7 @@ async function generateAccount() {
   }
 }
 
-function formatPhoneNumber(phone) {
-  // Replace dots with hyphens
-  return phone.replace(/\./g, "-");
-}
+
 
 async function copy(e) {
   const datagroup = e.currentTarget;
