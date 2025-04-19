@@ -2,6 +2,7 @@
   /* outline: 1px solid #da6d3b; */
   padding: 1rem;
   border-radius: 8px;
+  min-width: 400px;
   max-width: 800px;
   margin: 0 auto;
   background-color: var(--background-light);
@@ -26,6 +27,7 @@
 .align-center {
   align-items: center;
 }
+
 
 .box {
   box-shadow: var(--shadow);
