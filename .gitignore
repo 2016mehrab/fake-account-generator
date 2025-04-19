@@ -1,3 +1,4 @@
+*.jsonld
 web-ext-*
 drawing.svg
 # === OS files ===
