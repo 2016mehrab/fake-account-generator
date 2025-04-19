@@ -10,11 +10,7 @@ import {
   renderBody,
   renderAttachments,
 } from "./render.js";
-import {
-  getMessage,
-  getMessageAttachment,
-  getMessages,
-} from "./email.js";
+import { getMessage, getMessageAttachment, getMessages } from "./email.js";
 
 async function refresh() {
   const error_messageEl = document.getElementById("error-message");
@@ -51,11 +47,6 @@ async function refresh() {
 
     let html;
 
-    if (message?.html.length > 0) {
-      html = decodeWords(message.html[0]);
-      // html = DOMPurify.sanitize(html);
-    }
-
     let attachmentUrls = [];
 
     if (message.hasAttachments) {
@@ -75,7 +66,12 @@ async function refresh() {
       );
     }
 
-    renderBody(html, attachmentUrls);
+    if (message?.html?.length > 0) {
+      html = decodeWords(message.html[0]);
+      // html = DOMPurify.sanitize(html);
+      renderBody(html, attachmentUrls);
+    } else renderBody(message.text, attachmentUrls);
+
     renderSubject(message.subject);
     renderDate(message.createdAt);
     renderSender(message.from);
