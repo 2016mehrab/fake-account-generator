@@ -14,20 +14,18 @@
 }
 
 .email-info-label {
-  font-weight: bold;
   width: 20%;
+  color: var(--color-grey-500);
 }
 
-.content{
-    color:var(--color-grey-500);
-    font-weight: 600;
-    font-size: 1rem;
+.content {
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
 .align-center {
   align-items: center;
 }
-
 
 .box {
   box-shadow: var(--shadow);
@@ -35,13 +33,12 @@
   border-radius: 4px;
   flex-grow: 1;
 }
-.box-mid{
+.box-mid {
   box-shadow: var(--shadow);
   border-right: 1px solid var(--primary-color);
   border-left: 1px solid var(--primary-color);
   border-radius: 4px;
   flex-grow: 1;
-
 }
 
 .email-header {
@@ -60,7 +57,6 @@
 #date-container {
   font-weight: 500;
   font-size: 1rem;
-  color: var(--color-grey-500);
 }
 
 .attachment-item {

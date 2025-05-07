@@ -57,11 +57,12 @@ async function generateAccount() {
     res = await fetch("https://random-data-api.com/api/v2/users");
     res = await res.json();
 
-    let username = res.first_name.toLowerCase() + res.last_name.toLowerCase();
+    let username = res.first_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() + res.last_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() ;
 
+    let password = `${res.password}${res.first_name[0]}^${res.last_name[0].toLowerCase()}` 
     const { account, token, rawMessages } = await getEmail({
       username,
-      password: res.password,
+      password,
     });
 
     if (!account || !token) throw new Error("Failed to create account");
