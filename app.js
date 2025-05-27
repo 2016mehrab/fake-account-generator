@@ -65,8 +65,7 @@ async function generateAccount() {
 
     let username = res.first_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() + res.last_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() ;
 
-    console.log("password", res.password);
-    
+    res.username= username;
     const { account, token, rawMessages } = await getEmail({
       username,
       password:res.password,
