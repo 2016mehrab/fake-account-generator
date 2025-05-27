@@ -20,7 +20,7 @@
   },
 
   "permissions": ["storage", "clipboardWrite"],
-  "version": "1.0.2",
+  "version": "1.0.4",
   "browser_specific_settings": {
     "gecko": {
       "id": "2016mehrab@gmail.com"
