@@ -2,8 +2,8 @@ export default function generateRandomProfile() {
   // Helper functions for random data generation
   const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
   
-  const firstNames = ['James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth'];
-  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+  const firstNames = ['James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth', 'Jared','Ben','Ruby','Nick','Bobby'];
+  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Awad','Sean','Diana','Jonas','Patel'];
   const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
   const states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
