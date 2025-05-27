@@ -1,6 +1,7 @@
 import { DEBOUNCE_INTERVAL } from "./consts.js";
 import { deleteAccount, getEmail } from "./email.js";
 import {debounce, formatPhoneNumber, removeLocal, retrieveLocal, saveLocally} from "./utils.js"
+import generateRandomProfile from "./fakeDataGenerator.js";
 
 const data_elements = {
   username: document.querySelector("strong#username"),
@@ -41,6 +42,11 @@ function writeElements(data = {}) {
   data_elements.country.innerText = data.address?.country || "";
 }
 
+function getFakeData() {
+  let rawData = generateRandomProfile();
+  console.log(rawData);
+  return rawData;
+}
 
 async function generateAccount() {
   const generateButton = document.getElementById("generate");
@@ -54,8 +60,8 @@ async function generateAccount() {
       await removeLocal();
     }
 
-    res = await fetch("https://random-data-api.com/api/v2/users");
-    res = await res.json();
+    // res = await fetch("https://random-data-api.com/api/v2/users");
+    res = getFakeData();
 
     let username = res.first_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() + res.last_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() ;
 
@@ -74,6 +80,8 @@ async function generateAccount() {
       email: account.address,
       token,
     };
+
+    console.log("processed",data);
 
     writeElements(data);
     await saveLocally(data);

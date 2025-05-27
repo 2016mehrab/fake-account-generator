@@ -45,3 +45,6 @@ libs/
 .env.local
 .env.*
 .cache/
+
+ignore.js
+fake_us_accounts.json
