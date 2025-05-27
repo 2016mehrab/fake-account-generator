@@ -16,7 +16,9 @@ export default function generateRandomProfile() {
   const cities = ['Springfield', 'Riverside', 'Franklin', 'Greenville', 'Bloomington', 'Salem', 'Arlington', 'Madison', 'Clinton', 'Fairview'];
 
   // Generate random username
-  const username = `${getRandomItem(firstNames).toLowerCase()}${getRandomItem(lastNames).toLowerCase()}${Math.floor(Math.random() * 100)}`;
+  const first_name=getRandomItem(firstNames);
+  const last_name=getRandomItem(lastNames);
+  const username = `${first_name.toLowerCase()}${last_name.toLowerCase()}${Math.floor(Math.random() * 100)}`;
 
   // Generate random email
   const email = `${username}@${getRandomItem(domains)}`;
@@ -55,8 +57,8 @@ export default function generateRandomProfile() {
     email,
     password,
     phone_number: phoneNumber,
-    first_name: getRandomItem(firstNames),
-    last_name: getRandomItem(lastNames),
+    first_name,
+    last_name,
     gender: getRandomItem(['male', 'female']),
     date_of_birth: dateOfBirth,
     address: {

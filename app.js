@@ -63,11 +63,11 @@ async function generateAccount() {
     // res = await fetch("https://random-data-api.com/api/v2/users");
     res = getFakeData();
 
-    let username = res.first_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() + res.last_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() ;
+    // let username = res.first_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() + res.last_name.toLowerCase().replace(/['"\n\r\t]/g, '').trim() ;
 
-    res.username= username;
+    // res.username= username;
     const { account, token, rawMessages } = await getEmail({
-      username,
+      username:res.username,
       password:res.password,
     });
 
@@ -75,7 +75,6 @@ async function generateAccount() {
 
     const data = {
       ...res,
-      username,
       account: account.id,
       email: account.address,
       token,
